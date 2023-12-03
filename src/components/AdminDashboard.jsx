@@ -81,7 +81,7 @@ const AdminDashboard = () => {
       setSelectedRows([]);
       return;
     }
-    const filteredUsers = users.filter((user) => {
+    const filteredUsers = dummyUsers.filter((user) => {
       if (
         user.name.toLowerCase().includes(searchInput.toLowerCase()) ||
         user.email.toLowerCase().includes(searchInput.toLowerCase()) ||
