@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { dummyUsers } from './data';
 import './AdminDashboard.css'
 import {
-
   Table,
   TableBody,
   TableCell,
@@ -16,7 +14,6 @@ import {
   TextField,
   Stack,
   Typography
-
 } from '@mui/material';
 import SaveIcon from '@mui/icons-material/Save';
 import SearchIcon from '@mui/icons-material/Search';
@@ -25,6 +22,7 @@ import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 
 const AdminDashboard = () => {
   const [users, setUsers] = useState([]);
+  const [data, setData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedRows, setSelectedRows] = useState([]);
   const [searchInput, setSearchInput] = useState('');
@@ -34,7 +32,14 @@ const AdminDashboard = () => {
   const itemsPerPage = 10;
 
   useEffect(() => {
-    setUsers(dummyUsers);
+    const apiEndpoint = 'https://geektrust.s3-ap-southeast-1.amazonaws.com/adminui-problem/members.json';
+    fetch(apiEndpoint)
+      .then(response => response.json())
+      .then(data => {
+        setUsers(data);
+        setData(data);
+      })
+      .catch(error => console.error('Error fetching data:', error));
   }, []);
 
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -75,18 +80,19 @@ const AdminDashboard = () => {
   };
 
   const handleSearch = () => {
-    if (searchInput.trim().length === 0) {
-      setUsers(dummyUsers);
+    let searchData = searchInput.trim();
+    if (searchData.length === 0) {
+      setUsers(data);
       setCurrentPage(1);
       setSelectedRows([]);
       return;
     }
-    const filteredUsers = dummyUsers.filter((user) => {
+    const filteredUsers = data.filter((user) => {
       if (
-        user.name.toLowerCase().includes(searchInput.toLowerCase()) ||
-        user.email.toLowerCase().includes(searchInput.toLowerCase()) ||
-        user.role.toLowerCase().includes(searchInput.toLowerCase()) ||
-        user.id === searchInput.trim()
+        user.name.toLowerCase().includes(searchData.toLowerCase()) ||
+        user.email.toLowerCase().includes(searchData.toLowerCase()) ||
+        user.role.toLowerCase().includes(searchData.toLowerCase()) ||
+        user.id === searchData
       ) {
         return user;
       }
